@@ -1,2 +1,6 @@
 ---
 # Role variables
+
+# Base path of the sudores.d directory
+
+sudo_sudoers_d_path: /etc/sudoers.d

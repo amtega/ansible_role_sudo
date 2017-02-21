@@ -9,7 +9,7 @@
 
   - name: create sudoers.d directory
     file:
-      path: /etc/sudoers.d
+      path: "{{ sudo_sudoers_d_path }}"
       owner: root
       group: root
       mode: 0755
@@ -24,14 +24,16 @@
       group: root
 
   - name: search /etc/sudoers.d files that exists
-    find: paths="/etc/sudoers.d/" patterns="*"
+    find:
+      paths: "{{ sudo_sudoers_d_path }}/"
+      patterns: "*"
     register: search_sudoers_d_result
 
-  - name: create /etc/sudoers.d files
+  - name: create sudoers.d files
     template:
       backup: no
       src: sudoers.d.j2
-      dest: "/etc/sudoers.d/{{ sudoer_d }}"
+      dest: "{{ sudo_sudoers_d_path }}/{{ sudoer_d }}"
       mode: 0440
       owner: root
       group: root
@@ -39,7 +41,7 @@
     loop_control:
       loop_var: sudoer_d
 
-  - name: delete unnecessary /etc/sudoers.d files
+  - name: delete unnecessary sudoers.d files
     file: path={{ item.path }} state=absent
     when: "'{{ item.path | basename }}' not in sudo.sudoers_d"
     with_items: "{{ search_sudoers_d_result.files | default([]) }}"
