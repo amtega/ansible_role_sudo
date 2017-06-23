@@ -1,0 +1,44 @@
+---
+# Configure sudo tasks
+
+- block:
+
+  - name: setup /etc/sudoers config file
+    template:
+      backup: no
+      src: sudoers.j2
+      dest: /etc/sudoers
+      mode: 0440
+      owner: root
+      group: root
+
+  - name: search /etc/sudoers.d files that exists
+    find:
+      paths: "{{ sudo_sudoers_d_path }}/"
+      patterns: "*"
+    register: search_sudoers_d_result
+
+  - name: create sudoers.d files
+    template:
+      backup: no
+      src: sudoers.d.j2
+      dest: "{{ sudo_sudoers_d_path }}/{{ sudoer_d }}"
+      mode: 0440
+      owner: root
+      group: root
+    with_items: "{{ sudo_sudoers_d }}"
+    loop_control:
+      loop_var: sudoer_d
+
+  - name: delete unmanaged sudoers.d files
+    file: path={{ item.path }} state=absent
+    when:
+      - sudo_delete_unamanaged
+      - "'{{ item.path | basename }}' not in sudo_sudoers_d"
+    with_items: "{{ search_sudoers_d_result.files | default([]) }}"
+    loop_control:
+      label: "{{ item.path }}"
+
+  tags:
+    - role::sudo
+    - role::sudo::configure

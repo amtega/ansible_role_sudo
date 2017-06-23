@@ -1,34 +1,32 @@
 ---
 # Role default lower priority variables
 
-# Configuarion options of sudo. This is the format of the variable:
+# Hash with the sudoers config files to create. The structure of the variable
+# is this:
 #
-# sudo:
-#   sudoers_d:
-#     <name of the sudoers.d file>: <content of the file>
-#     <name of the sudoers.d file>: <content of the file>
-#     ...
+# sudo_sudoers_d:
+#   <name of the sudoers.d file>: <content of the file>
+#   <name of the sudoers.d file>: <content of the file>
+#   ...
 #
 # Sample:
 #
-# sudo:
-#   sudoers_d:
-#     defaults: |
-#       Defaults    requiretty
-#       Defaults    !visiblepw
-#       Defaults    always_set_home
-#       Defaults    env_reset
-#       Defaults    env_keep =  "COLORS DISPLAY HOSTNAME HISTSIZE INPUTRC KDEDIR LS_COLORS"
-#       Defaults    env_keep += "MAIL PS1 PS2 QTDIR USERNAME LANG LC_ADDRESS LC_CTYPE"
-#       Defaults    env_keep += "LC_COLLATE LC_IDENTIFICATION LC_MEASUREMENT LC_MESSAGES"
-#       Defaults    env_keep += "LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE"
-#       Defaults    env_keep += "LC_TIME LC_ALL LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY"
-#       Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin
-#     wheel: |
-#       %wheel	ALL=(ALL)	ALL
+# sudo_sudoers_d:
+#   defaults: |
+#     Defaults    requiretty
+#     Defaults    !visiblepw
+#     Defaults    always_set_home
+#     Defaults    env_reset
+#     Defaults    env_keep =  "COLORS DISPLAY HOSTNAME HISTSIZE INPUTRC KDEDIR LS_COLORS"
+#     Defaults    env_keep += "MAIL PS1 PS2 QTDIR USERNAME LANG LC_ADDRESS LC_CTYPE"
+#     Defaults    env_keep += "LC_COLLATE LC_IDENTIFICATION LC_MEASUREMENT LC_MESSAGES"
+#     Defaults    env_keep += "LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE"
+#     Defaults    env_keep += "LC_TIME LC_ALL LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY"
+#     Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin
+#   wheel: |
+#     %wheel	ALL=(ALL)	ALL
 
-sudo:
-  sudoers_d:
+sudo_sudoers_d:
     defaults: |
       Defaults    requiretty
       Defaults    !visiblepw
@@ -40,3 +38,9 @@ sudo:
       Defaults    env_keep += "LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE"
       Defaults    env_keep += "LC_TIME LC_ALL LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY"
       Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin
+
+# Delete unmanaged sudoers files if found. If true the role will delete all
+# files in the sudoers.d directory that are not part of the sudo_sudoers_d
+# variable.
+
+sudo_delete_unamanaged: true
