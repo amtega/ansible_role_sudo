@@ -8,7 +8,37 @@
     - role: docker_sandbox
       docker_sandbox_state: started
 
-- name: test sudo role
+- name: test sudo role with defaults
+  hosts: docker_sandbox_containers
+  vars:
+  roles:
+    - sudo
+
+- name: create unmanaged sudoers.d file for later tests
+  hosts: docker_sandbox_containers
+  tasks:
+    - name: create /etc/sudoers.d/unmanaged
+      copy:
+        src: /etc/issue
+        dest: /etc/sudoers.d/unmanaged
+        force: no
+
+- name: test disabled deletion of unamanged sudoers.d
+  hosts: docker_sandbox_containers
+  roles:
+    - role: sudo
+      sudo_delete_unamanaged: false
+  tasks:
+    - name: check /etc/sudoers.d/unmanaged file
+      stat:
+        path: /etc/sudoers.d/unmanaged
+      register: check_sudoers_d_unamanaged_result
+
+    - name: check sudoers.d content
+      assert:
+        that: check_sudoers_d_unamanaged_result.stat.exists
+
+- name: test enabled deletion of unamanged sudoers.d and complex config
   hosts: docker_sandbox_containers
   vars:
     sudo_sudoers_d:
@@ -17,11 +47,6 @@
         Defaults    !visiblepw
         Defaults    always_set_home
         Defaults    env_reset
-        Defaults    env_keep =  "COLORS DISPLAY HOSTNAME HISTSIZE INPUTRC KDEDIR LS_COLORS"
-        Defaults    env_keep += "MAIL PS1 PS2 QTDIR USERNAME LANG LC_ADDRESS LC_CTYPE"
-        Defaults    env_keep += "LC_COLLATE LC_IDENTIFICATION LC_MEASUREMENT LC_MESSAGES"
-        Defaults    env_keep += "LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE"
-        Defaults    env_keep += "LC_TIME LC_ALL LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY"
         Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin
       wheel: |
         %wheel	ALL=(ALL)	ALL
@@ -32,6 +57,45 @@
         User_Alias OPERATORS = %grp-org-pxg-amtega-ait-ds--linux-sudo-operators
   roles:
     - sudo
+  tasks:
+    - name: check /etc/sudoers.d/unmanaged file
+      stat:
+        path: /etc/sudoers.d/unmanaged
+      register: check_sudoers_d_unamanaged_result
+
+    - name: check /etc/sudoers.d/defaults file
+      stat:
+        path: /etc/sudoers.d/unmanaged
+      register: check_sudoers_d_defaults_result
+
+    - name: check /etc/sudoers.d/defaults file
+      stat:
+        path: /etc/sudoers.d/defaults
+      register: check_sudoers_d_defaults_result
+
+    - name: check /etc/sudoers.d/wheel file
+      stat:
+        path: /etc/sudoers.d/wheel
+      register: check_sudoers_d_wheel_result
+
+    - name: check /etc/sudoers.d/administrators file
+      stat:
+        path: /etc/sudoers.d/administrators
+      register: check_sudoers_d_administrators_result
+
+    - name: check /etc/sudoers.d/operators file
+      stat:
+        path: /etc/sudoers.d/operators
+      register: check_sudoers_d_operators_result
+
+    - name: check sudoers.d content
+      assert:
+        that:
+          - not check_sudoers_d_unamanaged_result.stat.exists
+          - check_sudoers_d_defaults_result.stat.exists
+          - check_sudoers_d_wheel_result.stat.exists
+          - check_sudoers_d_administrators_result.stat.exists
+          - check_sudoers_d_operators_result.stat.exists
   tags:
     - idempotence
 

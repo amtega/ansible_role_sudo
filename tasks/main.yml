@@ -7,8 +7,8 @@
     - role::sudo
     - role::sudo::install
 
-- name: install sudo
-  include: install.yml
+- name: configure sudo
+  include: configure.yml
   tags:
     - role::sudo
     - role::sudo::configure

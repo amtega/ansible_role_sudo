@@ -12,12 +12,6 @@
       owner: root
       group: root
 
-  - name: search /etc/sudoers.d files that exists
-    find:
-      paths: "{{ sudo_sudoers_d_path }}/"
-      patterns: "*"
-    register: search_sudoers_d_result
-
   - name: create sudoers.d files
     template:
       backup: no
@@ -30,11 +24,17 @@
     loop_control:
       loop_var: sudoer_d
 
+  - name: search /etc/sudoers.d files that exists
+    find:
+      paths: "{{ sudo_sudoers_d_path }}/"
+      patterns: "*"
+    register: search_sudoers_d_result
+
   - name: delete unmanaged sudoers.d files
     file: path={{ item.path }} state=absent
     when:
       - sudo_delete_unamanaged
-      - "'{{ item.path | basename }}' not in sudo_sudoers_d"
+      - item.path | basename not in sudo_sudoers_d
     with_items: "{{ search_sudoers_d_result.files | default([]) }}"
     loop_control:
       label: "{{ item.path }}"
