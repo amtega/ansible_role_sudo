@@ -8,3 +8,7 @@
 
 - Fixed bugs.
 - Improved tests.
+
+## 2017-09-15
+
+- Improved tests.
