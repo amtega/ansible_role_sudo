@@ -2,13 +2,13 @@
 # Main sudo tasks
 
 - name: install sudo
-  include: install.yml
+  import_tasks: install.yml
   tags:
     - role::sudo
     - role::sudo::install
 
 - name: configure sudo
-  include: configure.yml
+  import_tasks: configure.yml
   tags:
     - role::sudo
     - role::sudo::configure
