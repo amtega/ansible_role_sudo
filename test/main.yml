@@ -4,15 +4,15 @@
 - name: run idempotence test
   hosts: localhost
   roles:
-    - role: docker_presets
-    - role: docker_sandbox
+    - role: amtega.docker_presets
+    - role: amtega.docker_sandbox
       docker_sandbox_state: started
 
 - name: test sudo role with defaults
   hosts: docker_sandbox_containers
   vars:
   roles:
-    - sudo
+    - amtega.sudo
 
 - name: create unmanaged sudoers.d file for later tests
   hosts: docker_sandbox_containers
@@ -26,7 +26,7 @@
 - name: test disabled deletion of unamanged sudoers.d
   hosts: docker_sandbox_containers
   roles:
-    - role: sudo
+    - role: amtega.sudo
       sudo_delete_unamanaged: false
   tasks:
     - name: check /etc/sudoers.d/unmanaged file
@@ -56,7 +56,7 @@
       operators: |
         User_Alias OPERATORS = %grp-org-pxg-amtega-ait-ds--linux-sudo-operators
   roles:
-    - sudo
+    - amtega.sudo
   tasks:
     - name: check /etc/sudoers.d/unmanaged file
       stat:
@@ -102,5 +102,5 @@
 - name: cleanup docker docker sandbox
   hosts: localhost
   roles:
-    - role: docker_sandbox
+    - role: amtega.docker_sandbox
       docker_sandbox_state: absent
