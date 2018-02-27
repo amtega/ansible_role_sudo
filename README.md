@@ -60,4 +60,4 @@ GNU General Public License for more details or European Union Public License for
 
 ## Author Information
 
-- Juan Antonio Valiño García
+- Juan Antonio Valiño García.
