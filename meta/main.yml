@@ -2,6 +2,7 @@
 # Role dependencies
 
 galaxy_info:
+  role_name: sudo
   author: Juan Antonio Valiño García
   description: Setup sudo
   company: AMTEGA - Xunta de Galicia
