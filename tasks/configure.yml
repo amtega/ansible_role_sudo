@@ -2,6 +2,18 @@
 # Configure sudo tasks
 
 - block:
+    - name: setup fact with sudoers loaded from host variables
+      include_role:
+        name: amtega.select_hostvars
+        apply:
+          tags:
+            - role::groups
+      vars:
+        select_hostvars_pattern: "^sudo_sudoers_d_.*"
+        select_hostvars_fact_name: sudo_sudoers_d_hostvars
+        select_hostvars_output_type: list
+      when: sudo_load_sudoers_d_from_hostvars
+
     - name: setup /etc/sudoers config file
       template:
         backup: no
@@ -15,13 +27,14 @@
       template:
         backup: no
         src: sudoers.d.j2
-        dest: "{{ sudo_sudoers_d_path }}/{{ sudoer_d }}"
+        dest: "{{ sudo_sudoers_d_path }}/{{ sudo_sudoer_d_item.key }}"
         mode: 0440
         owner: root
         group: root
-      with_items: "{{ sudo_sudoers_d }}"
+      loop: "{{ sudo_sudoers_d_to_manage | dict2items }}"
       loop_control:
-        loop_var: sudoer_d
+        loop_var: sudo_sudoer_d_item
+        label: "{{ sudo_sudoer_d_item.key }}"
 
     - name: search /etc/sudoers.d files that exists
       find:
@@ -30,13 +43,25 @@
       register: search_sudoers_d_result
 
     - name: delete unmanaged sudoers.d files
-      file: path={{ item.path }} state=absent
-      when:
-        - sudo_delete_unamanaged
-        - item.path | basename not in sudo_sudoers_d
-      with_items: "{{ search_sudoers_d_result.files | default([]) }}"
+      file:
+        path: "{{ sudo_sudoers_d_path }}/{{ sudo_sudoer_d_item }}"
+        state: absent
+      when: sudo_delete_unamanaged
+      loop: >-
+        {{ search_sudoers_d_result.files
+           | default([])
+           | map(attribute="path")
+           | map("basename")
+           | reject("in", sudo_sudoers_d_to_manage.keys())
+           | list }}
       loop_control:
-        label: "{{ item.path }}"
+        loop_var: sudo_sudoer_d_item
+
+  vars:
+    sudo_sudoers_d_to_manage: >-
+      {{ sudo_sudoers_d
+         | combine((sudo_load_sudoers_d_from_hostvars)
+            | ternary(sudo_sudoers_d_hostvars | default({}) | flatten, {})) }}
   tags:
     - role::sudo
     - role::sudo::configure

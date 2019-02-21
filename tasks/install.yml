@@ -1,18 +1,12 @@
 ---
 # Sudo install tasks
 
-- block:
-    - name: install sudo package
-      package:
-        name: sudo
-        state: latest
-
-    - name: create sudoers.d directory
-      file:
-        path: "{{ sudo_sudoers_d_path }}"
-        owner: root
-        group: root
-        mode: 0755
+- name: create sudoers.d directory
+  file:
+    path: "{{ sudo_sudoers_d_path }}"
+    owner: root
+    group: root
+    mode: 0755
   tags:
     - role::sudo
     - role::sudo::install

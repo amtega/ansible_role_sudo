@@ -5,8 +5,17 @@
   hosts: localhost
   roles:
     - role: amtega.docker_presets
+      docker_presets_images_json_query: >-
+        [? starts_with(name, `centos-6`)
+           || starts_with(name, `centos-7`)
+           || starts_with(name, `debian-9`)
+           || starts_with(name, `fedora-27`)
+           || starts_with(name, `fedora-28`) ]
+
     - role: amtega.docker_sandbox
       docker_sandbox_state: started
+  tags:
+    - sandbox
 
 - name: test sudo role with defaults
   hosts: docker_sandbox_containers
@@ -38,6 +47,17 @@
       assert:
         that: check_sudoers_d_unamanaged_result.stat.exists
 
+- name: prepare docker containers for test
+  hosts: docker_sandbox_containers
+  tasks:
+    - name: setup extra sudoers
+      set_fact:
+        sudo_sudoers_d_operators:
+          operators: |
+            User_Alias OPERATORS = %grp-org-pxg-amtega-ait-ds--linux-sudo-operators
+  tags:
+    - idempotence
+
 - name: test enabled deletion of unamanged sudoers.d and complex config
   hosts: docker_sandbox_containers
   vars:
@@ -53,8 +73,8 @@
       administrators: |
         User_Alias ADMINISTRATORS = %grp-org-pxg-amtega-ait-ds--linux-sudo
         ADMINISTRATORS ALL=(ALL) ALL
-      operators: |
-        User_Alias OPERATORS = %grp-org-pxg-amtega-ait-ds--linux-sudo-operators
+
+    sudo_load_sudoers_d_from_hostvars: yes
   roles:
     - amtega.sudo
   tasks:
@@ -104,3 +124,6 @@
   roles:
     - role: amtega.docker_sandbox
       docker_sandbox_state: absent
+  tags:
+    - cleanup
+    - sandbox
