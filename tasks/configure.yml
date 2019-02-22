@@ -52,7 +52,7 @@
            | default([])
            | map(attribute="path")
            | map("basename")
-           | reject("in", sudo_sudoers_d_to_manage.keys())
+           | reject("in", sudo_sudoers_d_to_manage.keys() | list)
            | list }}
       loop_control:
         loop_var: sudo_sudoer_d_item
