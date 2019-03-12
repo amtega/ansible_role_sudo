@@ -2,19 +2,7 @@
 # Configure sudo tasks
 
 - block:
-    - name: setup fact with sudoers loaded from host variables
-      include_role:
-        name: amtega.select_hostvars
-        apply:
-          tags:
-            - role::groups
-      vars:
-        select_hostvars_pattern: "^sudo_sudoers_d_.*"
-        select_hostvars_fact_name: sudo_sudoers_d_hostvars
-        select_hostvars_output_type: list
-      when: sudo_load_sudoers_d_from_hostvars
-
-    - name: setup /etc/sudoers config file
+    - name: Setup /etc/sudoers config file
       template:
         backup: no
         src: sudoers.j2
@@ -23,7 +11,7 @@
         owner: root
         group: root
 
-    - name: create sudoers.d files
+    - name: Create sudoers.d files
       template:
         backup: no
         src: sudoers.d.j2
@@ -36,13 +24,13 @@
         loop_var: sudo_sudoer_d_item
         label: "{{ sudo_sudoer_d_item.key }}"
 
-    - name: search /etc/sudoers.d files that exists
+    - name: Search /etc/sudoers.d files that exists
       find:
         paths: "{{ sudo_sudoers_d_path }}/"
         patterns: "*"
       register: search_sudoers_d_result
 
-    - name: delete unmanaged sudoers.d files
+    - name: Delete unmanaged sudoers.d files
       file:
         path: "{{ sudo_sudoers_d_path }}/{{ sudo_sudoer_d_item }}"
         state: absent

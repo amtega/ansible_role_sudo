@@ -1,7 +1,7 @@
 ---
 # Sudo install tasks
 
-- name: create sudoers.d directory
+- name: Create sudoers.d directory
   file:
     path: "{{ sudo_sudoers_d_path }}"
     owner: root
