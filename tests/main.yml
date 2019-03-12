@@ -1,7 +1,7 @@
 ---
 # Tasks for testing role
 
-- name: run idempotence test
+- name: Run idempotence test
   hosts: localhost
   roles:
     - role: amtega.docker_presets
@@ -17,40 +17,40 @@
   tags:
     - sandbox
 
-- name: test sudo role with defaults
+- name: Test sudo role with defaults
   hosts: docker_sandbox_containers
   vars:
   roles:
     - amtega.sudo
 
-- name: create unmanaged sudoers.d file for later tests
+- name: Create unmanaged sudoers.d file for later tests
   hosts: docker_sandbox_containers
   tasks:
-    - name: create /etc/sudoers.d/unmanaged
+    - name: Create /etc/sudoers.d/unmanaged
       copy:
         content: ""
         dest: /etc/sudoers.d/unmanaged
         force: no
 
-- name: test disabled deletion of unamanged sudoers.d
+- name: Test disabled deletion of unamanged sudoers.d
   hosts: docker_sandbox_containers
   roles:
     - role: amtega.sudo
       sudo_delete_unamanaged: false
   tasks:
-    - name: check /etc/sudoers.d/unmanaged file
+    - name: Check /etc/sudoers.d/unmanaged file
       stat:
         path: /etc/sudoers.d/unmanaged
       register: check_sudoers_d_unamanaged_result
 
-    - name: check sudoers.d content
+    - name: Check sudoers.d content
       assert:
         that: check_sudoers_d_unamanaged_result.stat.exists
 
-- name: prepare docker containers for test
+- name: Prepare docker containers for test
   hosts: docker_sandbox_containers
   tasks:
-    - name: setup extra sudoers
+    - name: Setup extra sudoers
       set_fact:
         sudo_sudoers_d_operators:
           operators: |
@@ -58,7 +58,7 @@
   tags:
     - idempotence
 
-- name: test enabled deletion of unamanged sudoers.d and complex config
+- name: Test enabled deletion of unamanged sudoers.d and complex config
   hosts: docker_sandbox_containers
   vars:
     sudo_sudoers_d:
@@ -78,37 +78,37 @@
   roles:
     - amtega.sudo
   tasks:
-    - name: check /etc/sudoers.d/unmanaged file
+    - name: Check /etc/sudoers.d/unmanaged file
       stat:
         path: /etc/sudoers.d/unmanaged
       register: check_sudoers_d_unamanaged_result
 
-    - name: check /etc/sudoers.d/defaults file
+    - name: Check /etc/sudoers.d/defaults file
       stat:
         path: /etc/sudoers.d/unmanaged
       register: check_sudoers_d_defaults_result
 
-    - name: check /etc/sudoers.d/defaults file
+    - name: Check /etc/sudoers.d/defaults file
       stat:
         path: /etc/sudoers.d/defaults
       register: check_sudoers_d_defaults_result
 
-    - name: check /etc/sudoers.d/wheel file
+    - name: Check /etc/sudoers.d/wheel file
       stat:
         path: /etc/sudoers.d/wheel
       register: check_sudoers_d_wheel_result
 
-    - name: check /etc/sudoers.d/administrators file
+    - name: Check /etc/sudoers.d/administrators file
       stat:
         path: /etc/sudoers.d/administrators
       register: check_sudoers_d_administrators_result
 
-    - name: check /etc/sudoers.d/operators file
+    - name: Check /etc/sudoers.d/operators file
       stat:
         path: /etc/sudoers.d/operators
       register: check_sudoers_d_operators_result
 
-    - name: check sudoers.d content
+    - name: Check sudoers.d content
       assert:
         that:
           - not check_sudoers_d_unamanaged_result.stat.exists
@@ -119,7 +119,7 @@
   tags:
     - idempotence
 
-- name: cleanup docker docker sandbox
+- name: Cleanup docker docker sandbox
   hosts: localhost
   roles:
     - role: amtega.docker_sandbox

@@ -1,13 +1,13 @@
 ---
 # Main sudo tasks
 
-- name: install sudo
+- name: Install sudo
   import_tasks: install.yml
   tags:
     - role::sudo
     - role::sudo::install
 
-- name: configure sudo
+- name: Configure sudo
   import_tasks: configure.yml
   tags:
     - role::sudo
