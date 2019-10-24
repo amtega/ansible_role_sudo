@@ -2,15 +2,6 @@
 # Configure sudo tasks
 
 - block:
-    - name: Setup /etc/sudoers config file
-      template:
-        backup: no
-        src: sudoers.j2
-        dest: /etc/sudoers
-        mode: 0440
-        owner: root
-        group: root
-
     - name: Create sudoers.d files
       template:
         backup: no
@@ -45,6 +36,14 @@
       loop_control:
         loop_var: sudo_sudoer_d_item
 
+    - name: Setup /etc/sudoers config file
+      template:
+        backup: no
+        src: sudoers.j2
+        dest: /etc/sudoers
+        mode: 0440
+        owner: root
+        group: root
   vars:
     sudo_sudoers_d_to_manage: >-
       {{ sudo_sudoers_d
