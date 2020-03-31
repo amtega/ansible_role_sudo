@@ -1,31 +1,6 @@
 ---
 # Main sudo tasks
 
-- include_role:
-    name: amtega.check_platform
-  vars:
-    check_platform_distributions:
-      centos: 6
-      fedora: 27
-      rhel: 6
-
-- include_role:
-    name: amtega.packages
-  vars:
-    packages_os:
-      all:
-        all:
-          sudo: present
-
-- include_role:
-    name: amtega.select_hostvars
-  vars:
-    select_hostvars_query:
-      pattern: "^sudo_sudoers_d_.*"
-      fact_name: sudo_sudoers_d_hostvars
-      output_type: list
-  when: sudo_load_sudoers_d_from_hostvars | bool
-
 - name: Install sudo
   import_tasks: install.yml
   tags:
