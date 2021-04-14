@@ -1,0 +1,11 @@
+---
+
+- name: Prepare unmanaged sudoer
+  hosts: molecule_hosts
+  gather_facts: no
+  tasks:
+    - name: Create /etc/sudoers.d/unmanaged
+      copy:
+        content: ""
+        dest: /etc/sudoers.d/unmanaged
+        force: no
