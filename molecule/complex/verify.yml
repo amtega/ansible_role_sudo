@@ -1,0 +1,44 @@
+---
+
+- name: Verify
+  hosts: molecule_hosts
+  gather_facts: no
+  tasks:
+    - name: Check /etc/sudoers.d/unmanaged file
+      stat:
+        path: /etc/sudoers.d/unmanaged
+      register: check_sudoers_d_unamanaged_result
+
+    - name: Check /etc/sudoers.d/defaults file
+      stat:
+        path: /etc/sudoers.d/unmanaged
+      register: check_sudoers_d_defaults_result
+
+    - name: Check /etc/sudoers.d/defaults file
+      stat:
+        path: /etc/sudoers.d/defaults
+      register: check_sudoers_d_defaults_result
+
+    - name: Check /etc/sudoers.d/wheel file
+      stat:
+        path: /etc/sudoers.d/wheel
+      register: check_sudoers_d_wheel_result
+
+    - name: Check /etc/sudoers.d/administrators file
+      stat:
+        path: /etc/sudoers.d/administrators
+      register: check_sudoers_d_administrators_result
+
+    - name: Check /etc/sudoers.d/operators file
+      stat:
+        path: /etc/sudoers.d/operators
+      register: check_sudoers_d_operators_result
+
+    - name: Check sudoers.d content
+      assert:
+        that:
+          - not check_sudoers_d_unamanaged_result.stat.exists
+          - check_sudoers_d_defaults_result.stat.exists
+          - check_sudoers_d_wheel_result.stat.exists
+          - check_sudoers_d_administrators_result.stat.exists
+          - check_sudoers_d_operators_result.stat.exists

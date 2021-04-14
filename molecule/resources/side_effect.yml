@@ -1,0 +1,5 @@
+---
+
+- name: Side effect
+  hosts: molecule_hosts
+  gather_facts: no

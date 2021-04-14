@@ -1,5 +1,3 @@
 {{ ansible_managed | comment }}
 
-root	ALL=(ALL) 	ALL
-
-#includedir {{ sudo_sudoers_d_path }}
+{{ sudo_sudoers }}
