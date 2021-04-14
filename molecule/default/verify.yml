@@ -1,0 +1,14 @@
+---
+
+- name: Verify
+  hosts: molecule_hosts
+  gather_facts: no
+  tasks:
+    - name: Check /etc/sudoers.d/unmanaged file
+      stat:
+        path: /etc/sudoers.d/unmanaged
+      register: check_sudoers_d_unamanaged_result
+
+    - name: Check sudoers.d content
+      assert:
+        that: not check_sudoers_d_unamanaged_result.stat.exists
