@@ -1,6 +1,6 @@
 ---
 
-- import_playbook: ../prepare_centos_6.yml
+- import_playbook: ../resources/prepare_centos_6.yml
 
 - name: Prepare
   hosts: molecule_hosts
@@ -11,3 +11,4 @@
         content: ""
         dest: /etc/sudoers.d/unmanaged
         force: no
+        mode: 0755
