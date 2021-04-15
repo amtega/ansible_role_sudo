@@ -14,6 +14,13 @@ driver:
   name: docker
 lint: "${MOLECULE_SCENARIO_DIRECTORY}/../resources/linters.sh"
 platforms:
+  - name: "centos6-${INSTANCE_UUID:-1}"
+    image: centos:6
+    dockerfile: ../resources/Dockerfile.centos6.j2
+    groups:
+      - molecule_hosts
+      - molecule_hosts_centos
+      - molecule_hosts_centos_6
   - name: "centos7-${INSTANCE_UUID:-1}"
     image: centos:7
     groups:
@@ -41,7 +48,7 @@ platforms:
 provisioner:
   name: ansible
   playbooks:
-    prepare: ../resources/prepare_unmanaged.yml
+    prepare: ../resources/prepare.yml
     converge: ../resources/converge.yml
     cleanup: ../resources/cleanup.yml
     side_effect: ../resources/side_effect.yml

@@ -1,6 +1,8 @@
 ---
 
-- name: Prepare unmanaged sudoer
+- import_playbook: ../resources/prepare_centos_6.yml
+
+- name: Prepare
   hosts: molecule_hosts
   gather_facts: no
   tasks:
@@ -9,3 +11,4 @@
         content: ""
         dest: /etc/sudoers.d/unmanaged
         force: no
+        mode: 0755

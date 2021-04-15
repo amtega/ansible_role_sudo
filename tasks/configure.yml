@@ -37,7 +37,9 @@
         loop_var: sudo_sudoer_d_item
 
     - name: Setup /etc/sudoers config file
-      when: sudo_sudoers | default("") | length > 0
+      when:
+        - sudo_sudoers is not none
+        - sudo_sudoers | default("") | length > 0
       template:
         backup: no
         src: sudoers.j2
