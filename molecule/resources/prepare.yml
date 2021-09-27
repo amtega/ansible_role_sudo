@@ -6,9 +6,9 @@
   hosts: molecule_hosts
   gather_facts: no
   tasks:
-    - name: Create /etc/sudoers.d/unmanaged
+    - name: Create /etc/sudoers.d/05-unmanaged
       copy:
         content: ""
-        dest: /etc/sudoers.d/unmanaged
+        dest: /etc/sudoers.d/05-unmanaged
         force: no
         mode: 0755

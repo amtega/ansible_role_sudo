@@ -33,18 +33,18 @@ platforms:
       - molecule_hosts
       - molecule_hosts_centos
       - molecule_hosts_centos_8
-  - name: "fedora32-${INSTANCE_UUID:-1}"
-    image: fedora:32
-    groups:
-      - molecule_hosts
-      - molecule_hosts_fedora
-      - molecule_hosts_fedora_32
   - name: "fedora33-${INSTANCE_UUID:-1}"
     image: fedora:33
     groups:
       - molecule_hosts
       - molecule_hosts_fedora
       - molecule_hosts_fedora_33
+  - name: "fedora34-${INSTANCE_UUID:-1}"
+    image: fedora:34
+    groups:
+      - molecule_hosts
+      - molecule_hosts_fedora
+      - molecule_hosts_fedora_34
 provisioner:
   name: ansible
   playbooks:
@@ -54,28 +54,36 @@ provisioner:
     side_effect: ../resources/side_effect.yml
   config_options:
     defaults:
-      callback_whitelist: profile_tasks
+      callback_enabled: profile_tasks
       action_plugins: $PWD/action_plugins
   inventory:
     hosts:
       molecule_hosts:
         vars:
           sudo_sudoers_d:
-            defaults: |
-              Defaults    requiretty
-              Defaults    !visiblepw
-              Defaults    always_set_home
-              Defaults    env_reset
-              Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin
-            wheel: |
-              %wheel	ALL=(ALL)	ALL
-            administrators: |
-              User_Alias ADMINISTRATORS = %adminsgroup
-              ADMINISTRATORS ALL=(ALL) ALL
+            defaults:
+              priority: 50
+              content: |
+                Defaults    requiretty
+                Defaults    !visiblepw
+                Defaults    always_set_home
+                Defaults    env_reset
+                Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin
+            wheel:
+              priority: 50
+              content: |
+                %wheel	ALL=(ALL)	ALL
+            administrators:
+              priority: 99
+              content: |
+                User_Alias ADMINISTRATORS = %adminsgroup
+                ADMINISTRATORS ALL=(ALL) ALL
 
           sudo_sudoers_d_operators:
-            operators: |
-              User_Alias OPERATORS = %operatorsgroup
+            operators:
+              priority: 70
+              content: |
+                User_Alias OPERATORS = %operatorsgroup
 
           sudo_load_sudoers_d_from_hostvars: yes
       molecule_hosts_fedora:

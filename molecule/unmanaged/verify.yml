@@ -4,9 +4,9 @@
   hosts: molecule_hosts
   gather_facts: no
   tasks:
-    - name: Check /etc/sudoers.d/unmanaged file
+    - name: Check /etc/sudoers.d/05-unmanaged file
       stat:
-        path: /etc/sudoers.d/unmanaged
+        path: /etc/sudoers.d/05-unmanaged
       register: check_sudoers_d_unamanaged_result
 
     - name: Check sudoers.d content
