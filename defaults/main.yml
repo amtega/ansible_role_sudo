@@ -12,48 +12,59 @@ sudo_sudoers: |
 # Dict with the sudoers config files to create. The structure of the variable
 # is this:
 #
+#
 # sudo_sudoers_d:
-#   <name of the sudoers.d file>: <content of the file>
-#   <name of the sudoers.d file>: <content of the file>
+#   <name of the sudoers.d file>:
+#     priority: <priority from 0 to 99>     # Higher number means higher prority
+#     content: <content of the file>
+#   <name of the sudoers.d file>:
+#     priority: <priority>
+#     content: <content of the file>
 #   ...
 #
 # Sample:
 #
 # sudo_sudoers_d:
-#   defaults: |
-#     Defaults    requiretty
-#     Defaults    !visiblepw
-#     Defaults    always_set_home
-#     Defaults    env_reset
-#     Defaults    env_keep =  "COLORS DISPLAY HOSTNAME HISTSIZE INPUTRC KDEDIR"
-#     Defaults    env_keep += "LS_COLORS MAIL PS1 PS2 QTDIR USERNAME LANG"
-#     Defaults    env_keep += "LC_ADDRESS LC_CTYPE LC_COLLATE LC_IDENTIFICATION"
-#     Defaults    env_keep += "LC_MEASUREMENT LC_MESSAGES LC_MONETARY LC_NAME"
-#     Defaults    env_keep += "LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME LC_ALL"
-#     Defaults    env_keep += "LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY"
-#     Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin
-#   wheel: |
-#     %wheel	ALL=(ALL)	ALL
+#   defaults:
+#     priority: 50
+#     content: |
+#       Defaults requiretty
+#       Defaults !visiblepw
+#       Defaults always_set_home
+#       Defaults env_reset
+#       Defaults env_keep =  "COLORS DISPLAY HOSTNAME HISTSIZE INPUTRC KDEDIR"
+#       Defaults env_keep += "LS_COLORS MAIL PS1 PS2 QTDIR USERNAME LANG"
+#       Defaults env_keep += "LC_ADDRESS LC_CTYPE LC_COLLATE LC_IDENTIFICATION"
+#       Defaults env_keep += "LC_MEASUREMENT LC_MESSAGES LC_MONETARY LC_NAME"
+#       Defaults env_keep += "LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME LC_ALL"
+#       Defaults env_keep += "LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY"
+#       Defaults secure_path = /sbin:/bin:/usr/sbin:/usr/bin
+#   wheel:
+#     priority: 50
+#     content: |
+#       %wheel	ALL=(ALL)	ALL
 
 sudo_sudoers_d:
-  defaults: |
-    Defaults    requiretty
-    Defaults    !visiblepw
-    Defaults    always_set_home
-    Defaults    env_reset
-    Defaults    env_keep =  "COLORS DISPLAY HOSTNAME HISTSIZE INPUTRC KDEDIR"
-    Defaults    env_keep += "LS_COLORS MAIL PS1 PS2 QTDIR USERNAME LANG"
-    Defaults    env_keep += "LC_ADDRESS LC_CTYPE LC_COLLATE LC_IDENTIFICATION"
-    Defaults    env_keep += "LC_MEASUREMENT LC_MESSAGES LC_MONETARY LC_NAME"
-    Defaults    env_keep += "LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME LC_ALL"
-    Defaults    env_keep += "LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY"
-    Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin
+  defaults:
+    priority: 50
+    content: |
+      Defaults    requiretty
+      Defaults    !visiblepw
+      Defaults    always_set_home
+      Defaults    env_reset
+      Defaults    env_keep =  "COLORS DISPLAY HOSTNAME HISTSIZE INPUTRC KDEDIR"
+      Defaults    env_keep += "LS_COLORS MAIL PS1 PS2 QTDIR USERNAME LANG"
+      Defaults    env_keep += "LC_ADDRESS LC_CTYPE LC_COLLATE LC_IDENTIFICATION"
+      Defaults    env_keep += "LC_MEASUREMENT LC_MESSAGES LC_MONETARY LC_NAME"
+      Defaults    env_keep += "LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME LC_ALL"
+      Defaults    env_keep += "LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY"
+      Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin
 
 # Delete unmanaged sudoers files if found. If true the role will delete all
 # files in the sudoers.d directory that are not part of the sudo_sudoers_d
 # variable.
 
-sudo_delete_unamanaged: yes
+sudo_delete_unmanaged: yes
 
 # Indicate `sudo_sudoers_d` must be loaded also from host variables. Any host
 # variable that begins with "sudo_sudoers_d_*" and contains the necessary

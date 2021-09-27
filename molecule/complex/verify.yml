@@ -4,34 +4,34 @@
   hosts: molecule_hosts
   gather_facts: no
   tasks:
-    - name: Check /etc/sudoers.d/unmanaged file
+    - name: Check /etc/sudoers.d/05-unmanaged file
       stat:
-        path: /etc/sudoers.d/unmanaged
+        path: /etc/sudoers.d/05-unmanaged
       register: check_sudoers_d_unamanaged_result
 
-    - name: Check /etc/sudoers.d/defaults file
+    - name: Check /etc/sudoers.d/50-defaults file
       stat:
-        path: /etc/sudoers.d/unmanaged
+        path: /etc/sudoers.d/05-unmanaged
       register: check_sudoers_d_defaults_result
 
-    - name: Check /etc/sudoers.d/defaults file
+    - name: Check /etc/sudoers.d/50-defaults file
       stat:
-        path: /etc/sudoers.d/defaults
+        path: /etc/sudoers.d/50-defaults
       register: check_sudoers_d_defaults_result
 
-    - name: Check /etc/sudoers.d/wheel file
+    - name: Check /etc/sudoers.d/50-wheel file
       stat:
-        path: /etc/sudoers.d/wheel
+        path: /etc/sudoers.d/50-wheel
       register: check_sudoers_d_wheel_result
 
-    - name: Check /etc/sudoers.d/administrators file
+    - name: Check /etc/sudoers.d/99-administrators file
       stat:
-        path: /etc/sudoers.d/administrators
+        path: /etc/sudoers.d/99-administrators
       register: check_sudoers_d_administrators_result
 
-    - name: Check /etc/sudoers.d/operators file
+    - name: Check /etc/sudoers.d/70-operators file
       stat:
-        path: /etc/sudoers.d/operators
+        path: /etc/sudoers.d/70-operators
       register: check_sudoers_d_operators_result
 
     - name: Check sudoers.d content
