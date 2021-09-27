@@ -1,19 +1,22 @@
 ---
 # Configure sudo tasks
 
+# "%02d" | format(tomcat_application_datasource_index1 | int) }}
+
 - block:
-    - name: Create sudoers.d files
+    - name: Setup sudoers.d files
       template:
         backup: no
         src: sudoers.d.j2
-        dest: "{{ sudo_sudoers_d_path }}/{{ sudo_sudoer_d_item.key }}"
+        dest: "{{ sudo_sudoers_d_path }}/{{ sudo_sudoers_file_name }}"
         mode: 0440
         owner: root
         group: root
+      register: sudo_setup_sudoers_d_result
       loop: "{{ sudo_sudoers_d_to_manage | dict2items }}"
       loop_control:
         loop_var: sudo_sudoer_d_item
-        label: "{{ sudo_sudoer_d_item.key }}"
+        label: "{{ sudo_sudoers_file_name }}"
 
     - name: Search /etc/sudoers.d files that exists
       find:
@@ -25,16 +28,22 @@
       file:
         path: "{{ sudo_sudoers_d_path }}/{{ sudo_sudoer_d_item }}"
         state: absent
-      when: sudo_delete_unamanaged
+      when: sudo_delete_unmanaged
       loop: >-
         {{ search_sudoers_d_result.files
            | default([])
            | map(attribute="path")
            | map("basename")
-           | reject("in", sudo_sudoers_d_to_manage.keys() | list)
+           | reject("in", sudo_sudoers_d_filenames)
            | list }}
       loop_control:
         loop_var: sudo_sudoer_d_item
+      vars:
+        sudo_sudoers_d_filenames: >-
+          {{ sudo_setup_sudoers_d_result.results
+             | map(attribute="invocation.module_args.dest")
+             | map("basename")
+             | list }}
 
     - name: Setup /etc/sudoers config file
       when:
@@ -48,6 +57,11 @@
         owner: root
         group: root
   vars:
+    sudo_sudoers_file_name: >-
+      {{ "%02d" | format(sudo_sudoer_d_item.value.priority)
+         + "-"
+         + sudo_sudoer_d_item.key }}
+
     sudo_sudoers_d_to_manage: >-
       {{ sudo_sudoers_d
          | combine((sudo_load_sudoers_d_from_hostvars)
