@@ -1,8 +1,6 @@
 ---
 # Configure sudo tasks
 
-# "%02d" | format(tomcat_application_datasource_index1 | int) }}
-
 - block:
     - name: Setup sudoers.d files
       template:
