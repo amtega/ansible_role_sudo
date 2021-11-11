@@ -11,6 +11,17 @@
         owner: root
         group: root
       register: sudo_setup_sudoers_d_result
+      when: sudo_sudoer_d_item.value.state | default("present") == "present"
+      loop: "{{ sudo_sudoers_d_to_manage | dict2items }}"
+      loop_control:
+        loop_var: sudo_sudoer_d_item
+        label: "{{ sudo_sudoers_file_name }}"
+
+    - name: Delete absent sudoers.d files
+      file:
+        path: "{{ sudo_sudoers_d_path }}/{{ sudo_sudoers_file_name }}"
+        state: absent
+      when: sudo_sudoer_d_item.value.state | default("present") == "absent"
       loop: "{{ sudo_sudoers_d_to_manage | dict2items }}"
       loop_control:
         loop_var: sudo_sudoer_d_item
@@ -39,6 +50,7 @@
       vars:
         sudo_sudoers_d_filenames: >-
           {{ sudo_setup_sudoers_d_result.results
+             | selectattr("invocation.module_args.dest", "defined")
              | map(attribute="invocation.module_args.dest")
              | map("basename")
              | list }}

@@ -12,14 +12,15 @@ sudo_sudoers: |
 # Dict with the sudoers config files to create. The structure of the variable
 # is this:
 #
-#
 # sudo_sudoers_d:
 #   <name of the sudoers.d file>:
 #     priority: <priority from 0 to 99>     # Higher number means higher prority
 #     content: <content of the file>
+#     state: <present_absent>               # Default is present
 #   <name of the sudoers.d file>:
 #     priority: <priority>
 #     content: <content of the file>
+#     state: <present_absent>
 #   ...
 #
 # Sample:
