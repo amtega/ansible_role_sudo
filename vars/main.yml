@@ -1,6 +1,17 @@
 ---
 # Role variables
 
-# Base path of the sudores.d directory
+# Base path of the sudoers.d directory
 
 sudo_sudoers_d_path: /etc/sudoers.d
+
+# Sudoers files to manage
+
+sudo_sudoers_d_to_manage_raw: >-
+  {{ sudo_sudoers_d
+     | combine((sudo_load_sudoers_d_from_hostvars)
+               | ternary(sudo_sudoers_d_hostvars
+                         | default({}) | flatten, {})) }}
+
+sudo_sudoers_d_to_manage: >-
+  {{ lookup("template", "sudoers_d.yml.j2") | from_yaml }}
