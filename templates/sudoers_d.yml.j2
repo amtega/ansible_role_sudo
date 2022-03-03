@@ -1,0 +1,9 @@
+{% for name in sudo_sudoers_d_to_manage_raw.keys() | list %}
+{% set sudoer_d = sudo_sudoers_d_to_manage_raw[name] %}
+{% set extra = {"path": sudo_sudoers_d_path
+                        + "/"
+                        + "%02d" | format(sudoer_d.priority)
+                        + "-"
+                        + name} %}
+- {{ sudoer_d | combine(extra) | to_json }}
+{% endfor %}
